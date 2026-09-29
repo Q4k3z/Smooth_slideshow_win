@@ -1,0 +1,20 @@
+appId: com.slideshow.smooth
+productName: Smooth Slideshow
+directories:
+  output: dist
+files:
+  - "main.js"
+  - "preload.js"
+  - "scan-files.js"
+  - "src/**/*"
+  - "package.json"
+win:
+  forceCodeSigning: false
+  signAndEditExecutable: false
+  target:
+    - target: portable
+      arch:
+        - x64
+portable:
+  artifactName: "Smooth-Slideshow-Portable-${version}.exe"
+

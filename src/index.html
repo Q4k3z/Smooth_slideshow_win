@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src slideshow:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Smooth Slideshow</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/kenburns.css">
+  <link rel="stylesheet" href="styles/glass-ui.css">
+</head>
+<body>
+
+  <!-- Custom Window Header (Non-fullscreen mode) -->
+  <header id="window-header" class="window-header">
+    <div class="window-title">
+      <span class="app-icon">🖼️</span>
+      <span class="app-name">Smooth Slideshow</span>
+    </div>
+    <div class="window-controls">
+      <button id="btn-min" class="win-btn" title="Minimize">—</button>
+      <button id="btn-max" class="win-btn" title="Fullscreen">⛶</button>
+      <button id="btn-close" class="win-btn close" title="Close">✕</button>
+    </div>
+  </header>
+
+  <!-- Empty State / Welcome Screen -->
+  <main id="welcome-screen" class="welcome-screen">
+    <div class="glass-card welcome-card">
+      <div class="welcome-icon">🌄</div>
+      
+      <button id="btn-open-folder-welcome" class="btn-primary">
+        <span class="btn-icon">📁</span> Select Image Folder
+      </button>
+
+      <div class="drop-hint">Or drag and drop an image folder here</div>
+    </div>
+  </main>
+
+  <!-- Main Slideshow Render Stage -->
+  <div id="slideshow-stage" class="slideshow-stage hidden">
+    <!-- Slide A -->
+    <div id="slide-a" class="slide-layer">
+      <div class="bg-blur"></div>
+      <div class="fg-container">
+        <img class="fg-image" alt="Slide image A" />
+      </div>
+    </div>
+    <!-- Slide B (Double Buffer for Crossfade) -->
+    <div id="slide-b" class="slide-layer">
+      <div class="bg-blur"></div>
+      <div class="fg-container">
+        <img class="fg-image" alt="Slide image B" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Glassmorphism Controls -->
+  <nav id="floating-controls" class="floating-controls hidden">
+    <button id="btn-prev" class="control-btn" title="Previous Image (Left Arrow)">⏮</button>
+    <button id="btn-play-pause" class="control-btn primary" title="Pause / Play (Space)">⏸</button>
+    <button id="btn-next" class="control-btn" title="Next Image (Right Arrow)">⏭</button>
+
+    <div class="divider"></div>
+
+    <button id="btn-toggle-shuffle" class="control-btn active" title="Toggle True Shuffle (S)" aria-pressed="true">🔀</button>
+    <button id="btn-toggle-kenburns" class="control-btn active" title="Toggle Ken Burns (K)" aria-pressed="true">🔍</button>
+    <button id="btn-toggle-info" class="control-btn active" title="Toggle Image Info (I)" aria-pressed="true">🏷️</button>
+    <button id="btn-change-folder" class="control-btn" title="Change Folder (O)">📁</button>
+    <button id="btn-settings" class="control-btn" title="Settings">⚙</button>
+    <button id="btn-fullscreen" class="control-btn" title="Fullscreen (F11 / Double Click)">⛶</button>
+  </nav>
+
+  <!-- Image Info Badge (Top-left floating info) -->
+  <div id="info-badge" class="info-badge hidden">
+    <span id="info-filename" class="info-filename">image.jpg</span>
+    <span id="info-counter" class="info-counter">1 / 100</span>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden" role="status" aria-live="polite">
+    <span id="toast-message">Loaded 120 images</span>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="modal-overlay hidden" aria-hidden="true">
+    <div class="glass-card modal-card" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <div class="modal-header">
+        <h3 id="settings-title">⚙ Slideshow Settings</h3>
+        <button id="btn-close-settings" class="modal-close-btn" aria-label="Close settings">✕</button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="setting-item">
+          <label for="setting-duration">Slide Duration:</label>
+          <select id="setting-duration" class="setting-select">
+            <option value="3000">3 Seconds</option>
+            <option value="5000" selected>5 Seconds</option>
+            <option value="8000">8 Seconds</option>
+            <option value="10000">10 Seconds</option>
+            <option value="15000">15 Seconds</option>
+            <option value="30000">30 Seconds</option>
+            <option value="60000">1 Minute</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <label for="setting-transition-type">Transition Effect:</label>
+          <select id="setting-transition-type" class="setting-select">
+            <option value="random" selected>🔀 Random</option>
+            <option value="fade">✨ Crossfade</option>
+            <option value="slide-left">⬅ Slide Left</option>
+            <option value="slide-right">➡ Slide Right</option>
+            <option value="zoom-in">🔍 Zoom In</option>
+            <option value="zoom-out">🔎 Zoom Out</option>
+            <option value="blur-fade">💧 Blur Dissolve</option>
+            <option value="flip-3d">🎲 3D Flip</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <label for="setting-transition-duration">Transition Speed:</label>
+          <select id="setting-transition-duration" class="setting-select">
+            <option value="800">Fast (0.8s)</option>
+            <option value="1500" selected>Standard (1.5s)</option>
+            <option value="2500">Smooth (2.5s)</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <label for="setting-blur-intensity">Background Blur:</label>
+          <div class="slider-row">
+            <input type="range" id="setting-blur-intensity" min="0" max="80" value="40" class="setting-slider">
+            <span id="blur-intensity-val">40px</span>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <label for="setting-kenburns-zoom">Max Ken Burns Zoom:</label>
+          <div class="slider-row">
+            <input type="range" id="setting-kenburns-zoom" min="105" max="140" value="120" class="setting-slider">
+            <span id="kenburns-zoom-val">1.2x</span>
+          </div>
+        </div>
+
+        <div class="setting-item checkbox-item">
+          <input type="checkbox" id="setting-info-badge-toggle" checked>
+          <label for="setting-info-badge-toggle">Show image file name and count badge</label>
+        </div>
+
+        <div class="setting-item checkbox-item">
+          <input type="checkbox" id="setting-kenburns-toggle" checked>
+          <label for="setting-kenburns-toggle">Enable Ken Burns motion effect (Pan & Zoom)</label>
+        </div>
+
+        <div class="setting-item checkbox-item">
+          <input type="checkbox" id="setting-shuffle-toggle" checked>
+          <label for="setting-shuffle-toggle">Enable non-repeating shuffle (True Shuffle)</label>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="renderer/scanner.js"></script>
+  <script src="renderer/kenburns.js"></script>
+  <script src="renderer/ui.js"></script>
+  <script src="renderer/app.js"></script>
+</body>
+</html>

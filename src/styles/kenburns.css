@@ -1,0 +1,64 @@
+/* Hardware-Accelerated 60fps Ken Burns CSS Animations */
+
+/* 1. Zoom In + Pan Left */
+@keyframes kenburns-zoom-in-left {
+  0% {
+    transform: scale3d(1, 1, 1) translate3d(2%, 0, 0);
+  }
+  100% {
+    transform: scale3d(var(--kb-max-zoom, 1.2), var(--kb-max-zoom, 1.2), 1) translate3d(-3%, -2%, 0);
+  }
+}
+
+/* 2. Zoom Out + Pan Right */
+@keyframes kenburns-zoom-out-right {
+  0% {
+    transform: scale3d(var(--kb-max-zoom, 1.2), var(--kb-max-zoom, 1.2), 1) translate3d(-3%, -2%, 0);
+  }
+  100% {
+    transform: scale3d(1.02, 1.02, 1) translate3d(2%, 1%, 0);
+  }
+}
+
+/* 3. Zoom In + Pan Top-Right */
+@keyframes kenburns-zoom-in-tr {
+  0% {
+    transform: scale3d(1.02, 1.02, 1) translate3d(-2%, 2%, 0);
+  }
+  100% {
+    transform: scale3d(var(--kb-max-zoom, 1.2), var(--kb-max-zoom, 1.2), 1) translate3d(3%, -3%, 0);
+  }
+}
+
+/* 4. Zoom Out + Pan Bottom-Left */
+@keyframes kenburns-zoom-out-bl {
+  0% {
+    transform: scale3d(var(--kb-max-zoom, 1.2), var(--kb-max-zoom, 1.2), 1) translate3d(2%, -3%, 0);
+  }
+  100% {
+    transform: scale3d(1.02, 1.02, 1) translate3d(-2%, 2%, 0);
+  }
+}
+
+/* Animation Trajectory Utility Classes */
+.kb-traj-0 {
+  animation: kenburns-zoom-in-left var(--kb-duration, 8s) ease-in-out forwards;
+}
+
+.kb-traj-1 {
+  animation: kenburns-zoom-out-right var(--kb-duration, 8s) ease-in-out forwards;
+}
+
+.kb-traj-2 {
+  animation: kenburns-zoom-in-tr var(--kb-duration, 8s) ease-in-out forwards;
+}
+
+.kb-traj-3 {
+  animation: kenburns-zoom-out-bl var(--kb-duration, 8s) ease-in-out forwards;
+}
+
+/* When Ken Burns is disabled */
+.kb-disabled {
+  animation: none !important;
+  transform: scale3d(1, 1, 1) translate3d(0, 0, 0) !important;
+}
