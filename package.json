@@ -6,7 +6,9 @@
   "scripts": {
     "start": "electron .",
     "test": "node --test",
-    "build": "electron-builder --win portable",
+    "build": "electron-builder --win",
+    "build:installer": "electron-builder --win nsis",
+    "build:portable": "electron-builder --win portable",
     "perf:scan": "node tests/performance.js",
     "perf:render": "node tests/run-electron-smoke.js",
     "perf": "npm run perf:scan && npm run perf:render"

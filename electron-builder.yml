@@ -12,9 +12,20 @@ win:
   forceCodeSigning: false
   signAndEditExecutable: false
   target:
+    - target: nsis
+      arch:
+        - x64
     - target: portable
       arch:
         - x64
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: "Smooth Slideshow"
+  artifactName: "Smooth-Slideshow-Setup-${version}.exe"
+  uninstallDisplayName: "Smooth Slideshow"
 portable:
   artifactName: "Smooth-Slideshow-Portable-${version}.exe"
 

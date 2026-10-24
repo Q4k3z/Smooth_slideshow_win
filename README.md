@@ -11,13 +11,22 @@ npm ci
 npm start
 ```
 
-Build a standalone portable executable for Windows:
+Build Windows installer (tạo bộ cài đặt Start Menu & Desktop) hoặc bản portable:
 
 ```powershell
+# Tạo cả bộ cài đặt và bản portable:
 npm run build
+
+# Hoặc chỉ tạo bộ cài đặt Windows Setup (.exe):
+npm run build:installer
+
+# Hoặc chỉ tạo bản portable:
+npm run build:portable
 ```
 
-The output file is located in `dist/Smooth-Slideshow-Portable-1.0.0.exe`. The build uses `electron-builder.yml`.
+Các file đầu ra nằm trong thư mục `dist/`:
+- `dist/Smooth-Slideshow-Setup-1.0.0.exe`: Bộ cài đặt Windows, tự động tạo shortcut trong Start Menu (tìm kiếm được qua Windows Search) và Desktop.
+- `dist/Smooth-Slideshow-Portable-1.0.0.exe`: Bản chạy trực tiếp không cần cài đặt.
 
 ## Controls
 
